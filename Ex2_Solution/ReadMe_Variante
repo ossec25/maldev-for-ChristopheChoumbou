@@ -1,0 +1,81 @@
+
+Injection de code dans un processus Windows : programme variante
+
+
+Resultat: 
+
+Allocated 314 bytes at address 2015705956352 in remote process
+Created remote thread at address 836
+Check the listener
+
+Code: 
+
+Salut_Choumbou
+SalutChoumbou
+
+1. Le fonctionnement général est identique à la version classique
+La variante :
+
+Trouve le processus cible (ici : notepad.exe)
+
+Ouvre un handle avec les droits nécessaires
+
+Alloue de la mémoire dans le processus distant
+
+Injecte un shellcode (ici : 314 octets)
+
+Crée un thread distant pour exécuter ce shellcode
+
+Les mêmes API Windows :
+
+OpenProcess
+
+VirtualAllocEx
+
+WriteProcessMemory
+
+CreateRemoteThread
+
+2. Differences : le shellcode
+Dans la variante :
+
+Le shellcode est plus grand (314 bytes au lieu de ~297)
+
+Le shellcode contient un payload différent
+
+Le payload affiche une MessageBox personnalisée
+
+résultat :
+
+ Une fenêtre apparaît dans le processus Notepad
+ Titre : Salut_Choumbou  
+ Texte : SalutChoumbou
+
+Donc le shellcode de la variante est un MessageBox shellcode.
+
+3. Le message “Check the listener”
+Cette ligne indique que la variante :
+
+inclut probablement un stub de communication ou un point d’attente
+
+ou qu’elle a été conçue pour tester un mécanisme de callback
+
+Dans ton cas, il n’y a pas de listener externe :
+c’est juste un message de debug laissé dans le code.
+
+4. Différences techniques entre Classique et Variante
+
+Élément	Version Classique	Version Variante
+Taille du shellcode	~297 bytes	314 bytes
+Payload	Shellcode générique	MessageBox personnalisée
+Message console	Simple	“Check the listener”
+Finalité	Démonstration d’injection	Démonstration + interaction visuelle
+Effet visible	Aucun	MessageBox dans Notepad
+
+CONCLUSION
+La variante du programme implémente une injection de code similaire à la version classique,
+mais utilise un shellcode différent, conçu pour afficher une boîte de dialogue dans le processus cible. 
+Cette modification permet de visualiser concrètement l’exécution du code injecté, ce qui
+constitue une démonstration pédagogique de la technique d’injection dynamique. 
+Le shellcode est écrit dans la mémoire du processus distant, puis exécuté via un thread créé à l’aide de l’API CreateRemoteThread. 
+Le message “Check the listener” correspond à une trace de débogage laissée dans le code source.

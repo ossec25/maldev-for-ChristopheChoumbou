@@ -1,0 +1,4 @@
+ EXO 2 command:
+
+cd "C:\Users\Chris\Documents\Administrationet securité OS\Dummies Malware Dev\maldev-for-dummies-main\Work1\maldev-for-CHCH\Exo_CHCH\Ex2"
+
