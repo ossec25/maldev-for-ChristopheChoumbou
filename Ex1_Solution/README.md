@@ -1,4 +1,5 @@
 Loader C# : exécution de shellcode (version CreateThread & version Threadless)
+
 Ce dossier contient deux implémentations d’un loader C# permettant d’exécuter du shellcode dans un environnement contrôlé.
 Les deux programmes utilisent un shellcode généré via msfvenom, mais diffèrent dans leur manière de l’exécuter.
 
@@ -121,3 +122,26 @@ les différences entre une exécution via thread et une exécution inline,
 les implications en termes de détection et de comportement,
 
 les fondements des loaders utilisés dans les exercices suivants.
+
+Commandes utilisées:
+
+ Compiler et exécuter via dotnet (si tu veux recompiler)
+Ton dossier contient aussi le fichier ConsoleAppCH.csproj, donc tu peux utiliser le SDK .NET.
+
+ Compiler :
+
+powershell
+
+dotnet build
+
+Exécuter :
+
+powershell
+
+dotnet run
+
+ Méthode 3 — Exécuter un fichier .cs directement (si tu veux tester ProgramCH.cs)
+
+powershell
+
+dotnet run ConsoleApp1B.cs
