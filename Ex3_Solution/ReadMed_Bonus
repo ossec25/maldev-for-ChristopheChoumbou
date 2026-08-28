@@ -1,0 +1,137 @@
+README — BasicevasionBonus
+
+Présentation générale
+
+Ce projet BasicevasionBonus illustre une version améliorée de l’exercice 3, dans laquelle l’injection de code est réalisée via D/Invoke, une bibliothèque .NET permettant d’appeler dynamiquement des API natives Windows (NTDLL) sans recourir à P/Invoke classique.
+
+L’objectif pédagogique est de montrer :
+
+comment remplacer les appels Win32 classiques par leurs équivalents NT Native API ;
+
+comment utiliser D/Invoke pour contourner la détection basée sur les imports statiques ;
+
+comment intégrer un mécanisme simple de chiffrement/déchiffrement XOR pour masquer les chaînes et le payload ;
+
+comment structurer un injecteur propre dans un projet Visual Studio.
+
+Ce projet est destiné à l’apprentissage de concepts liés à la sécurité offensive, à l’analyse de logiciels et à la compréhension des mécanismes internes de Windows.
+
+Fonctionnalités principales
+
+1. Chiffrement XOR (clé 0x37)
+Le payload (shellcode) et certaines chaînes sensibles sont chiffrés via un XOR simple :
+
+csharp
+decrypted[i] = (byte)(encrypted[i] ^ key);
+Ce mécanisme permet d’éviter que les chaînes apparaissent en clair dans l’exécutable.
+
+2. Utilisation de D/Invoke
+Le projet utilise D/Invoke pour appeler les API natives suivantes :
+
+NtOpenProcess
+
+NtAllocateVirtualMemory
+
+NtWriteVirtualMemory
+
+NtCreateThreadEx
+
+Ces fonctions sont les équivalents NTDLL de :
+
+OpenProcess
+
+VirtualAllocEx
+
+WriteProcessMemory
+
+CreateRemoteThread
+
+L’intérêt pédagogique est de montrer comment contourner la détection basée sur les imports statiques en chargeant les fonctions dynamiquement.
+
+3. Injection dans un processus cible
+Le programme :
+
+déchiffre le nom du processus (notepad) ;
+
+récupère son PID ;
+
+ouvre le processus via NtOpenProcess ;
+
+alloue de la mémoire dans le processus distant ;
+
+déchiffre le shellcode ;
+
+écrit le shellcode dans la mémoire distante ;
+
+crée un thread distant pour exécuter le payload.
+
+Structure du projet
+Code
+BasicevasionBonus/
+│
+├── BasicevasionBonus.cs        → Code principal
+├── ConsoleApp8Bonus.csproj     → Fichier projet .NET
+│
+├── bin/                        → Build compilé
+└── obj/                        → Fichiers temporaires de compilation
+
+Prérequis
+✔ .NET 6 ou supérieur
+✔ D/Invoke installé via NuGet
+Dans Visual Studio :
+
+Code
+Manage NuGet Packages → Browse → DInvoke → Install
+✔ (Optionnel) Costura.Fody
+Permet d’intégrer automatiquement les DLL dans l’exécutable final.
+
+Exécution
+Dans le dossier du projet :
+
+Code
+dotnet run
+Le programme :
+
+déchiffre les données,
+
+localise le processus cible,
+
+alloue la mémoire,
+
+écrit le payload,
+
+crée un thread distant.
+
+Points pédagogiques importants
+
+Le passage de Win32 → NTDLL via D/Invoke réduit les indicateurs statiques.
+
+Le chiffrement XOR évite les chaînes en clair dans l’exécutable.
+
+L’utilisation de Marshal.AllocHGlobal permet de manipuler des buffers non managés.
+
+Les API natives nécessitent des structures et types spécifiques (NTSTATUS, ACCESS_MASK, etc.).
+
+Le code illustre la différence entre API documentées (Win32) et API internes (NT Native).
+
+Note importante
+Ce projet est fourni uniquement dans un cadre pédagogique, pour comprendre :
+
+les mécanismes internes de Windows,
+
+la dynamique des appels natifs,
+
+la structure d’un injecteur,
+
+les techniques de protection et d’analyse.
+
+Il ne doit pas être utilisé dans un contexte non autorisé.
+
+Références
+D/Invoke : https://github.com/TheWover/DInvoke
+
+Documentation NT Native API (non officielle)
+
+Concepts de mémoire virtuelle Windows
+
+Exercices précédents (1–3) du même module
